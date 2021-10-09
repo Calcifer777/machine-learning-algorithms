@@ -13,7 +13,7 @@ class PerceptronSpec extends AnyFlatSpec with should.Matchers {
     val inputs = 3
     val outputs = 2
     val sampleSize = 10
-    val p = perceptron(inputs, outputs, 0.4)    
+    val p = perceptron(inputs, outputs, 0.4)
     val result = p.activate(DenseMatrix.fill(sampleSize, inputs)(1.0))
     assert(result.rows == sampleSize)
     assert(result.cols == outputs)
