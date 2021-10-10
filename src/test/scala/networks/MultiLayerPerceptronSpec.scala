@@ -61,12 +61,12 @@ class MultiLayerPerceptronSpec extends AnyFlatSpec with should.Matchers {
       DenseMatrix(
         Array(-0.07973831, 0.56903848),
         Array(-0.00784318, 0.33450039),
-        Array(-0.13726413, 0.28561184),
+        Array(-0.13726413, 0.28561184)
       ),
       DenseMatrix(
         Array(-0.33036651),
         Array(0.65572476),
-        Array(1.19441974),
+        Array(1.19441974)
       )
     )
     val net = MultiLayerPerceptron(w, 0.25, 1)
@@ -82,19 +82,19 @@ class MultiLayerPerceptronSpec extends AnyFlatSpec with should.Matchers {
       DenseMatrix(
         Array(-0.08163325096664781, 0.5723107813544502),
         Array(-0.00979848542817659, 0.3378434365092607),
-        Array(-0.13738660373462594, 0.2863212584160498),
+        Array(-0.13738660373462594, 0.2863212584160498)
       ),
       DenseMatrix(
         Array(-0.33171359370334647),
         Array(0.6601188945346561),
-        Array(1.1959998857493688),
-      ),
+        Array(1.1959998857493688)
+      )
     )
     assert(trained.weights == expectedWeights)
   }
 
   it should "converge to the AND logic function" in {
-    val net = mlp(Seq(2, 2, 1), eta=0.4, beta=1)
+    val net = mlp(Seq(2, 2, 1), eta = 0.4, beta = 1)
     val inputs = DenseMatrix(
       Array(1.0, 1.0),
       Array(1.0, 0.0),
@@ -112,7 +112,8 @@ class MultiLayerPerceptronSpec extends AnyFlatSpec with should.Matchers {
   }
 
   it should "converge to the XOR logic function" in {
-    val net = mlp(Seq(2, 2, 1), eta=0.5, beta=2)
+    // higher beta to speedup training
+    val net = mlp(Seq(2, 2, 1), eta = 0.5, beta = 2)
     val inputs = DenseMatrix(
       Array(1.0, 1.0),
       Array(1.0, 0.0),
@@ -120,12 +121,12 @@ class MultiLayerPerceptronSpec extends AnyFlatSpec with should.Matchers {
       Array(0.0, 0.0)
     )
     val outputs = DenseMatrix(
-      Array(0.0), 
-      Array(1.0), 
-      Array(1.0), 
+      Array(0.0),
+      Array(1.0),
+      Array(1.0),
       Array(0.0)
     )
-    val trained = train(net, inputs, outputs, 10000)
+    val trained = train(net, inputs, outputs, 5000)
     val predictions = trained.activate(inputs)
     val margin = outputs - predictions
     assert(margin(0, 0) < 0.1)
