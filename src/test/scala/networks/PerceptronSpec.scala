@@ -68,7 +68,7 @@ class PerceptronSpec extends AnyFlatSpec with should.Matchers {
     assert(result.activate(inputs) == outputs)
   }
 
-  "it" should "not converge to the logic XOR function" in {
+  "it" should "not converge to the XOR logic function" in {
     val p = perceptron(2, 1, 0.4)
     val inputs = DenseMatrix(
       Array(1.0, 1.0),
@@ -86,10 +86,10 @@ class PerceptronSpec extends AnyFlatSpec with should.Matchers {
     assert(result.activate(inputs) != outputs)
   }
 
-  "A 3-input Perceptron" should "converge to the logic XOR function" in {
+  "A 3-input Perceptron" should "converge to the XOR logic function" in {
     val p = perceptron(3, 1, 0.4)
     val inputs = DenseMatrix(
-      Array(0.0, 0.0, 1.0),
+      Array(1.0, 0.0, 1.0),
       Array(0.0, 1.0, 0.0),
       Array(1.0, 0.0, 0.0),
       Array(1.0, 1.0, 0.0)
