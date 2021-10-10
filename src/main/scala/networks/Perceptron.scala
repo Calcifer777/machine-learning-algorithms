@@ -1,33 +1,15 @@
-package nn
+package networks
 
 import scala.annotation
 import com.typesafe.scalalogging.LazyLogging
 import breeze.linalg._
 import breeze.stats.distributions.Rand.FixedSeed.randBasis
 
-trait Network extends LazyLogging {
-
-  def inputSize: Int
-  def outputSize: Int
-  def eta: Double
-  def weights: DenseMatrix[Double]
-
-  def activationFunction(x: Double): Double
-
-  def activate(input: DenseMatrix[Double]): DenseMatrix[Double]
-
-  def trainIteration(
-      input: DenseMatrix[Double],
-      output: DenseMatrix[Double]
-  ): Network
-
-}
-
 case class Perceptron(
-    val inputSize: Int,
-    val outputSize: Int,
-    val eta: Double,
-    val weights: DenseMatrix[Double]
+    inputSize: Int,
+    outputSize: Int,
+    eta: Double,
+    weights: Seq[DenseMatrix[Double]]
 ) extends Network {
 
   def bias(size: Int): DenseMatrix[Double] = DenseMatrix.fill(size, 1)(-1)
@@ -35,7 +17,7 @@ case class Perceptron(
   def activationFunction(x: Double): Double = if (x > 0) 1 else 0
 
   def activate(inputs: DenseMatrix[Double]): DenseMatrix[Double] =
-    (DenseMatrix.horzcat(inputs, bias(inputs.rows)) * weights)
+    (DenseMatrix.horzcat(inputs, bias(inputs.rows)) * weights(0))
       .map(activationFunction)
 
   /** I: sample size
@@ -53,8 +35,8 @@ case class Perceptron(
     val activations = activate(inputs)
     val errors = activations - targets
     val adj = DenseMatrix.horzcat(inputs, bias(inputs.rows)).t * errors
-    val newWeights = this.weights - eta * adj
-    logger.debug("Weights:\n" + newWeights.toString(10, 10))
+    val newWeights = Seq(this.weights(0) - eta * adj)
+    logger.debug("Weights:\n" + newWeights(0).toString(10, 10))
     Perceptron(this.inputSize, this.outputSize, eta, newWeights)
   }
 
@@ -70,7 +52,7 @@ object Perceptron extends LazyLogging {
       inputSize,
       outputSize,
       eta,
-      DenseMatrix.rand(inputSize + 1, outputSize, uniform01)
+      Seq(DenseMatrix.rand(inputSize + 1, outputSize, uniform01))
     )
   }
 
@@ -82,7 +64,7 @@ object Perceptron extends LazyLogging {
   ): Perceptron = {
 
     logger.debug("Starting training")
-    logger.debug("Initial weights:\n" + p.weights.toString(10, 10))
+    logger.debug("Initial weights:\n" + p.weights(0).toString(10, 10))
 
     @annotation.tailrec
     def loop(

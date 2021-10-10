@@ -1,4 +1,4 @@
-package nn
+package networks
 
 import org.scalatest._
 import flatspec._
@@ -28,8 +28,8 @@ class PerceptronSpec extends AnyFlatSpec with should.Matchers {
     val p = perceptron(inputSize, outputSize, 0.4)
     val result = p.trainIteration(inputs, outputs)
     assert(result.weights != p.weights)
-    assert(result.weights.cols == p.weights.cols)
-    assert(result.weights.rows == p.weights.rows)
+    assert(result.weights(0).cols == p.weights(0).cols)
+    assert(result.weights(0).rows == p.weights(0).rows)
   }
 
   "A two-inputs perceptron" should "converge to the logic AND function" in {
