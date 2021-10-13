@@ -9,7 +9,8 @@ libraryDependencies ++= Seq(
   "org.scalactic" %% "scalactic" % scalaTestVersion,
   "org.scalatest" %% "scalatest" % scalaTestVersion % "test",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.4",
-  "ch.qos.logback" % "logback-classic" % "1.2.3"
+  "ch.qos.logback" % "logback-classic" % "1.2.3",
+  "com.github.tototoshi" %% "scala-csv" % "1.3.8"
 )
 
 // will flag errors in your ScalaTest (and Scalactic) code at compile time

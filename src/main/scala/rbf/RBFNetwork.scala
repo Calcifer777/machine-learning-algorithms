@@ -27,9 +27,7 @@ trait RBFNetwork {
 
   def predict(inputs: BDM[Double]): BDM[Double] = {
     val rbfOutputs = rbfLayer.predict(inputs)
-    val bias = DenseMatrix.fill[Double](inputs.rows, 1)(-1)
-    val rbfOutputsWithBias = DenseMatrix.vertcat(rbfOutputs, bias)
-    outputLayer.activate(rbfOutputsWithBias)
+    outputLayer.activate(rbfOutputs)
   }
 
 }
@@ -42,9 +40,13 @@ object RBFNetwork {
       targets: BDM[Double],
       epochs: Int
   ): RBFNetwork = {
-    val hiddenLayer = rbfNet.rbfLayer.predict(inputs)
-    val trainedOutput =
-      Network.train(rbfNet.outputLayer, hiddenLayer, targets, epochs)
+    val hiddenLayerData = rbfNet.rbfLayer.predict(inputs)
+    val trainedOutput = Network.train(
+      rbfNet.outputLayer,
+      hiddenLayerData,
+      targets,
+      epochs
+    )
     new RBFNetwork {
       val nIn = 10
       val nOut = 10

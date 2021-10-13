@@ -37,7 +37,7 @@ case class Perceptron(
     val errors = activations - targets
     val adj = DenseMatrix.horzcat(inputs, bias(inputs.rows)).t * errors
     val newWeights = Seq(this.weights(0) - eta * adj)
-    logger.debug("Weights:\n" + newWeights(0).toString(10, 10))
+    // logger.debug("Weights:\n" + newWeights(0).toString(10, 10))
     Perceptron(this.inputSize, this.outputSize, eta, newWeights)
   }
 
@@ -74,7 +74,8 @@ object Perceptron extends LazyLogging {
         targets: BDM[Double],
         loops: Int
     ): Perceptron = {
-      logger.debug(s"Training epoch $loops")
+      if (loops % 1000 == 0)
+        logger.debug(s"Training epoch $loops")
       if (loops <= epochs)
         loop(p.trainIteration(inputs, targets), inputs, targets, loops + 1)
       else p
