@@ -11,8 +11,13 @@ trait RBFLayer {
   def train(inputs: BDM[Double]): RBFLayer
 }
 
-case class Sample(sigma: Double, nHidden: Int, seed: Int = 42, weights: Option[BDM[Double]]=None, hidden: Option[BDM[Double]]=None)
-    extends RBFLayer {
+case class Sample(
+    sigma: Double,
+    nHidden: Int,
+    seed: Int = 42,
+    weights: Option[BDM[Double]] = None,
+    hidden: Option[BDM[Double]] = None
+) extends RBFLayer {
 
   /**
    * Inputs:                SampleSize x nInputs
@@ -31,9 +36,9 @@ case class Sample(sigma: Double, nHidden: Int, seed: Int = 42, weights: Option[B
       // Sum the squared diffs
       val sumOfSquaredDiff = sum(squaredDiff(*, ::)) // (Vector) SampleSize x 1
       exp(sumOfSquaredDiff) / (2 * math.pow(sigma, 2))
-      // TODO: normalize
+    // TODO: normalize
     }
-    Sample(sigma, nHidden, seed, Some(weights), Some(BDM(hiddenLayerNodes:_*)))
+    Sample(sigma, nHidden, seed, Some(weights), Some(BDM(hiddenLayerNodes: _*)))
   }
 }
 

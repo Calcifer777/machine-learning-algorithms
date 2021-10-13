@@ -5,9 +5,8 @@ import breeze.linalg._
 import breeze.numerics._
 import scala.util.Random
 import scala.math
-import networks.{ Perceptron, Network }
+import networks.{Perceptron, Network}
 import Perceptron._
-
 
 trait RBFNetwork {
 
@@ -25,13 +24,18 @@ trait RBFNetwork {
   val outputLayer: Network
 
   // RBF layer (with bias) must be compatible with outputLayer
-  // require(rbfLayer.nHidden+1 == outputLayer.inputSize)  
+  // require(rbfLayer.nHidden+1 == outputLayer.inputSize)
 
 }
 
 object RBFNetwork {
 
-  def train(net: RBFNetwork, inputs: BDM[Double], targets: BDM[Double], epochs: Int): RBFNetwork = {
+  def train(
+      net: RBFNetwork,
+      inputs: BDM[Double],
+      targets: BDM[Double],
+      epochs: Int
+  ): RBFNetwork = {
     val trainedRbf = net.rbfLayer.train(inputs)
     val trainedOutput = Network.train(net.outputLayer, inputs, targets, epochs)
     new RBFNetwork {

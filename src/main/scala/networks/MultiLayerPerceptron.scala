@@ -22,7 +22,8 @@ case class MultiLayerPerceptron(
 
   def makeBias(size: Int): BDM[Double] = DenseMatrix.fill(size, 1)(-1)
 
-  def addBias(m: BDM[Double]): BDM[Double] = DenseMatrix.horzcat(m, makeBias(m.rows))
+  def addBias(m: BDM[Double]): BDM[Double] =
+    DenseMatrix.horzcat(m, makeBias(m.rows))
 
   /** * TODO: generalize into case class */
   def activationFunction(x: Double): Double = 1.0 / (1.0 + exp(-beta * x))
@@ -48,7 +49,10 @@ case class MultiLayerPerceptron(
     Seq(h, o)
   }
 
-  def trainIteration(inputs: BDM[Double], targets: BDM[Double]): MultiLayerPerceptron = {
+  def trainIteration(
+      inputs: BDM[Double],
+      targets: BDM[Double]
+  ): MultiLayerPerceptron = {
 
     val activations = activateWithTrace(inputs)
     val h = activations(0)
