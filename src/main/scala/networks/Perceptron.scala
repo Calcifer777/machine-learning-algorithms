@@ -1,22 +1,23 @@
 package networks
 
-import scala.annotation
-import com.typesafe.scalalogging.LazyLogging
 import breeze.linalg._
+import breeze.linalg.{DenseMatrix => BDM, DenseVector => BDV, sum}
 import breeze.stats.distributions.Rand.FixedSeed.randBasis
+import com.typesafe.scalalogging.LazyLogging
+import scala.annotation
 
 case class Perceptron(
     inputSize: Int,
     outputSize: Int,
     eta: Double,
-    weights: Seq[DenseMatrix[Double]]
+    weights: Seq[BDM[Double]]
 ) extends Network {
 
-  def bias(size: Int): DenseMatrix[Double] = DenseMatrix.fill(size, 1)(-1)
+  def bias(size: Int): BDM[Double] = DenseMatrix.fill(size, 1)(-1)
 
   def activationFunction(x: Double): Double = if (x > 0) 1 else 0
 
-  def activate(inputs: DenseMatrix[Double]): DenseMatrix[Double] =
+  def activate(inputs: BDM[Double]): BDM[Double] =
     (DenseMatrix.horzcat(inputs, bias(inputs.rows)) * weights(0))
       .map(activationFunction)
 
@@ -29,8 +30,8 @@ case class Perceptron(
     * Errors: I x N
     */
   def trainIteration(
-      inputs: DenseMatrix[Double],
-      targets: DenseMatrix[Double]
+      inputs: BDM[Double],
+      targets: BDM[Double]
   ): Perceptron = {
     val activations = activate(inputs)
     val errors = activations - targets
@@ -58,8 +59,8 @@ object Perceptron extends LazyLogging {
 
   def train(
       p: Perceptron,
-      inputs: DenseMatrix[Double],
-      targets: DenseMatrix[Double],
+      inputs: BDM[Double],
+      targets: BDM[Double],
       epochs: Int
   ): Perceptron = {
 
@@ -69,8 +70,8 @@ object Perceptron extends LazyLogging {
     @annotation.tailrec
     def loop(
         p: Perceptron,
-        inputs: DenseMatrix[Double],
-        targets: DenseMatrix[Double],
+        inputs: BDM[Double],
+        targets: BDM[Double],
         loops: Int
     ): Perceptron = {
       logger.debug(s"Training epoch $loops")

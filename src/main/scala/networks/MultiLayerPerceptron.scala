@@ -1,27 +1,28 @@
 package networks
 
-import scala.annotation
-import com.typesafe.scalalogging.LazyLogging
 import breeze.linalg._
-import breeze.stats.distributions.Rand.FixedSeed.randBasis
-import spire.math.Algebraic.Expr.Mul
-import scala.math.exp
+import breeze.linalg.{DenseMatrix => BDM, DenseVector => BDV, sum}
 import breeze.numerics.round
+import breeze.stats.distributions.Rand.FixedSeed.randBasis
+import com.typesafe.scalalogging.LazyLogging
+import scala.annotation
+import scala.math.exp
+import spire.math.Algebraic.Expr.Mul
 
 /** 
  * TODO: eta is a training hyperparameter, should not be tied to the network
  */
 case class MultiLayerPerceptron(
-    weights: Seq[MD],
+    weights: Seq[BDM[Double]],
     eta: Double,
     beta: Double
 ) extends Network {
 
   require(weights.size == 2)
 
-  def makeBias(size: Int): MD = DenseMatrix.fill(size, 1)(-1)
+  def makeBias(size: Int): BDM[Double] = DenseMatrix.fill(size, 1)(-1)
 
-  def addBias(m: MD): MD = DenseMatrix.horzcat(m, makeBias(m.rows))
+  def addBias(m: BDM[Double]): BDM[Double] = DenseMatrix.horzcat(m, makeBias(m.rows))
 
   /** * TODO: generalize into case class */
   def activationFunction(x: Double): Double = 1.0 / (1.0 + exp(-beta * x))
@@ -36,18 +37,18 @@ case class MultiLayerPerceptron(
   }
 
   // assume sigmoid activation for outputs
-  def activate(input: MD): MD = {
+  def activate(input: BDM[Double]): BDM[Double] = {
     val h = (addBias(input) * weights(0)).map(activationFunction)
     (addBias(h) * weights(1)).map(activationFunction)
   }
 
-  def activateWithTrace(input: MD): Seq[MD] = {
+  def activateWithTrace(input: BDM[Double]): Seq[BDM[Double]] = {
     val h = addBias((addBias(input) * weights(0)).map(activationFunction))
     val o = (h * weights(1)).map(activationFunction)
     Seq(h, o)
   }
 
-  def trainIteration(inputs: MD, targets: MD): MultiLayerPerceptron = {
+  def trainIteration(inputs: BDM[Double], targets: BDM[Double]): MultiLayerPerceptron = {
 
     val activations = activateWithTrace(inputs)
     val h = activations(0)
@@ -76,7 +77,7 @@ object MultiLayerPerceptron {
 
   val uniform01 = breeze.stats.distributions.Uniform(-0.1, 0.1)
 
-  def makeWeights(rows: Int, cols: Int): MD =
+  def makeWeights(rows: Int, cols: Int): BDM[Double] =
     DenseMatrix.rand(rows, cols, uniform01)
 
   /**

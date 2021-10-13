@@ -68,3 +68,5 @@ jitwatch.out
 .bloop
 .bsp
 project/**/metals.sbt
+
+**/*.worksheet.sc

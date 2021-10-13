@@ -1,30 +1,30 @@
 package networks
 
 import com.typesafe.scalalogging.LazyLogging
-import breeze.linalg.DenseMatrix
+import breeze.linalg.{DenseMatrix => BDM, DenseVector => BDV, sum}
 
 trait Network extends LazyLogging {
 
   def eta: Double
-  def weights: Seq[DenseMatrix[Double]]
+  def weights: Seq[BDM[Double]]
 
   def activationFunction(x: Double): Double
 
-  def activate(input: DenseMatrix[Double]): DenseMatrix[Double]
+  def activate(input: BDM[Double]): BDM[Double]
 
   def trainIteration(
-      input: DenseMatrix[Double],
-      output: DenseMatrix[Double]
+      input: BDM[Double],
+      output: BDM[Double]
   ): Network
 
 }
 
 object Network extends LazyLogging {
 
-  def train(
-      net: Network,
-      inputs: DenseMatrix[Double],
-      targets: DenseMatrix[Double],
+  def train[T <: Network](
+      net: T,
+      inputs: BDM[Double],
+      targets: BDM[Double],
       epochs: Int
   ): Network = {
 
@@ -34,8 +34,8 @@ object Network extends LazyLogging {
     @annotation.tailrec
     def loop(
         net: Network,
-        inputs: DenseMatrix[Double],
-        targets: DenseMatrix[Double],
+        inputs: BDM[Double],
+        targets: BDM[Double],
         loops: Int
     ): Network = {
       if ((epochs - loops) % 10000 == 0) logger.debug(s"Training epoch $loops")
