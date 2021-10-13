@@ -8,40 +8,54 @@ import scala.math
 
 trait RBFLayer {
   val nHidden: Int
-  def train(inputs: BDM[Double]): RBFLayer
+  def weights(inputs: BDM[Double]): BDM[Double]
+  def predict(inputs: BDM[Double]): BDM[Double]
 }
 
 case class Sample(
     sigma: Double,
     nHidden: Int,
     seed: Int = 42,
-    weights: Option[BDM[Double]] = None,
     hidden: Option[BDM[Double]] = None
 ) extends RBFLayer {
+
+  /** 
+   * Weights are a sample of the inputs
+   */
+  def weights(inputs: BDM[Double]): BDM[Double] = {
+    require(inputs.rows >= nHidden)
+    Random.setSeed(seed)
+    val idx = Random.shuffle(0 to inputs.rows - 1).take(nHidden)
+    inputs(idx, ::).toDenseMatrix.t
+  }
 
   /**
    * Inputs:                SampleSize x nInputs
    * Hidden Layer Weights:  nInputs x nHidden
    * Hidden Layer Nodes:    sameplSize x nHidden
    */
-  def train(inputs: BDM[Double]): Sample = {
-    require(inputs.rows >= nHidden)
-    val idx = Random.shuffle(0 to inputs.rows).take(nHidden)
-    val weights = inputs(idx, ::).toDenseMatrix.t
-    val hiddenLayerNodes: Seq[BDV[Double]] = (0 to nHidden) map { (idx: Int) =>
+  def predict(inputs: BDM[Double]): BDM[Double] = {
+    val w = weights(inputs)
+    val predictionData = (0 to nHidden - 1) map { (idx: Int) =>
       // For each row in inputs, subtract a vector of weights;
       // take the square for each element
-      val squaredDiff =
-        pow(inputs(*, ::) - weights(::, idx), 2) // SampleSize x nInputs
-      // Sum the squared diffs
-      val sumOfSquaredDiff = sum(squaredDiff(*, ::)) // (Vector) SampleSize x 1
-      exp(sumOfSquaredDiff) / (2 * math.pow(sigma, 2))
-    // TODO: normalize
+      // Dimensions: SampleSize x nInputs
+      val squaredDiff = pow(inputs(*, ::) - w(::, idx), 2)
+      // Sum the squared diffs by column
+      // (Vector) SampleSize x 1
+      val sumOfSquaredDiff = -sum(squaredDiff(*, ::))
+      exp(sumOfSquaredDiff / (2 * math.pow(sigma, 2)))
     }
-    Sample(sigma, nHidden, seed, Some(weights), Some(BDM(hiddenLayerNodes: _*)))
+    val predictionBDM = BDM(predictionData: _*).t
+    // Columnwise normalization: sum hiddenLayerNodes by column, divide each column by this sum
+    val normalizedBDM = predictionBDM(::, *) map { c =>
+      c /:/ sum(predictionBDM(*, ::))
+    }
+    normalizedBDM
   }
 }
 
 case class KMeans(nHidden: Int) extends RBFLayer {
-  def train(inputs: BDM[Double]): KMeans = ???
+  def weights(inputs: BDM[Double]): BDM[Double] = ???
+  def predict(inputs: BDM[Double]): BDM[Double] = ???
 }
