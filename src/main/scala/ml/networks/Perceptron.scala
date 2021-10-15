@@ -1,4 +1,4 @@
-package networks
+package ml.networks
 
 import breeze.linalg._
 import breeze.linalg.{DenseMatrix => BDM, DenseVector => BDV, sum}
@@ -15,9 +15,9 @@ case class Perceptron(
 
   def bias(size: Int): BDM[Double] = DenseMatrix.fill(size, 1)(-1)
 
-  def activationFunction(x: Double): Double = if (x > 0) 1 else 0
+  def activationFunction(x: Double): Double = if (x > 0) 1.0 else 0.0
 
-  def activate(inputs: BDM[Double]): BDM[Double] =
+  def predict(inputs: BDM[Double]): BDM[Double] =
     (DenseMatrix.horzcat(inputs, bias(inputs.rows)) * weights(0))
       .map(activationFunction)
 
@@ -33,11 +33,9 @@ case class Perceptron(
       inputs: BDM[Double],
       targets: BDM[Double]
   ): Perceptron = {
-    val activations = activate(inputs)
-    val errors = activations - targets
-    val adj = DenseMatrix.horzcat(inputs, bias(inputs.rows)).t * errors
-    val newWeights = Seq(this.weights(0) - eta * adj)
-    // logger.debug("Weights:\n" + newWeights(0).toString(10, 10))
+    val inputsWithBias = DenseMatrix.horzcat(inputs, bias(inputs.rows))
+    val errors = predict(inputs) - targets
+    val newWeights = Seq(this.weights(0) - eta * (inputsWithBias.t * errors))
     Perceptron(this.inputSize, this.outputSize, eta, newWeights)
   }
 
@@ -65,7 +63,7 @@ object Perceptron extends LazyLogging {
   ): Perceptron = {
 
     logger.debug("Starting training")
-    logger.debug("Initial weights:\n" + p.weights(0).toString(10, 10))
+    // logger.debug("Initial weights:\n" + p.weights(0).toString(10, 10))
 
     @annotation.tailrec
     def loop(
@@ -74,8 +72,10 @@ object Perceptron extends LazyLogging {
         targets: BDM[Double],
         loops: Int
     ): Perceptron = {
-      if (loops % 1000 == 0)
-        logger.debug(s"Training epoch $loops")
+      if (loops % (epochs / 10).toInt == 0)
+        val outputs = p.predict(inputs)
+        val precision = p.precision(outputs, targets)
+        logger.debug(s"Training epoch $loops; Precision $precision\n")
       if (loops <= epochs)
         loop(p.trainIteration(inputs, targets), inputs, targets, loops + 1)
       else p

@@ -1,4 +1,4 @@
-package networks
+package ml.networks
 
 import org.scalatest._
 import flatspec._
@@ -21,27 +21,27 @@ class MultiLayerPerceptronSpec extends AnyFlatSpec with should.Matchers {
     assert(nn.weights(1).cols == 3)
   }
 
-  it should "activate via sigmoid function" in {
+  it should "predict via sigmoid function" in {
     val nn = mlp(Seq(5, 4, 3), 0.4, 0.3)
     val result = nn.activationFunction(3.0)
     assert(abs(result - 0.7109) < 0.001)
   }
 
-  it should "yield the a correctly sized Matrix when activated" in {
+  it should "yield the a correctly sized Matrix when predictd" in {
     val nn = mlp(Seq(5, 4, 3), 0.4, 0.3)
     val sampleSize = 10
     val inputs = DenseMatrix.fill[Double](sampleSize, 5)(42)
-    val result = nn.activate(inputs)
+    val result = nn.predict(inputs)
     assert(result.rows == 10)
     assert(result.cols == 3)
   }
 
-  it should "yield the same output when activated with full trace" in {
+  it should "yield the same output when predictd with full trace" in {
     val net = mlp(Seq(5, 4, 3), 0.4, 0.3)
     val sampleSize = 1
     val inputs = DenseMatrix.fill[Double](sampleSize, 5)(42)
-    val act = net.activate(inputs)
-    val withTrace = net.activateWithTrace(inputs)
+    val act = net.predict(inputs)
+    val withTrace = net.predictWithTrace(inputs)
     assert(act == withTrace.last)
   }
 
@@ -103,7 +103,7 @@ class MultiLayerPerceptronSpec extends AnyFlatSpec with should.Matchers {
     )
     val outputs = DenseMatrix(Array(1.0), Array(0.0), Array(0.0), Array(0.0))
     val trained = train(net, inputs, outputs, 5000)
-    val predictions = trained.activate(inputs)
+    val predictions = trained.predict(inputs)
     val margin = outputs - predictions
     assert(margin(0, 0) < 0.1)
     assert(margin(1, 0) < 0.1)
@@ -127,7 +127,7 @@ class MultiLayerPerceptronSpec extends AnyFlatSpec with should.Matchers {
       Array(0.0)
     )
     val trained = train(net, inputs, outputs, 5000)
-    val predictions = trained.activate(inputs)
+    val predictions = trained.predict(inputs)
     val margin = outputs - predictions
     assert(margin(0, 0) < 0.1)
     assert(margin(1, 0) < 0.1)

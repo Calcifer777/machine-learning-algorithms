@@ -1,4 +1,4 @@
-package rbf
+package ml.rbf
 
 import breeze.linalg.{DenseMatrix => BDM, DenseVector => BDV, sum}
 import breeze.linalg._

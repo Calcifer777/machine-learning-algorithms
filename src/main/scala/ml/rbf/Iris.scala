@@ -1,4 +1,4 @@
-package networks
+package ml.rbf
 
 import breeze.linalg.{DenseMatrix => BDM, DenseVector => BDV, sum}
 import breeze.linalg._
@@ -8,10 +8,9 @@ import scala.io.Source
 import com.github.tototoshi.csv._
 import scala.util.Random
 
-import networks._
-import MultiLayerPerceptron._
+import ml.networks.Perceptron.{ perceptron, train }
 
-object IrisMLP extends App {
+object Iris extends App {
 
   def preprocess(fileName: String): (BDM[Double], BDM[Double]) = {
     val data = CSVReader.open(Source.fromResource(fileName)).all()
@@ -74,18 +73,25 @@ object IrisMLP extends App {
   val (xs, ys) = preprocess("iris.csv")
   val (xsTrain, xsTest, ysTrain, ysTest) = trainTestSplit(xs, ys, 0.3)
 
-  val net = mlp(Seq(4, 4, 3), eta = 0.5, beta = 2)
+  val rbfNet = new RBFNetwork {
+    val nIn = 4
+    val nOut = 3
+    val rbfLayer = Sample(0.4, 4, 42)
+    val outputLayer = perceptron(4, 3, 0.3)
+  }
 
-  val trained = Network.train(net, xsTrain, ysTrain, 5000)
+  val trained = RBFNetwork.train(rbfNet, xsTrain, ysTrain, 5000)
 
-  val predictions = trained.activate(xsTest)
+  val predictions = trained.predict(xsTest)
 
+  println(predictions.rows)
+  println(predictions.cols)
   val m = DenseMatrix.horzcat(predictions, ysTest)
   m(*, ::) map { case x =>
     println(x.slice(0, 3))
     println(x.slice(3, 6))
     println("\n")
   }
-  val cm = confMatrix(predictions, ysTest)
-  println(cm.toString(100, 100))
+  // val cm = confMatrix(predictions, ysTest)
+  // println(cm.toString(100, 100))
 }

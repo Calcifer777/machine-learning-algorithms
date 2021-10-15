@@ -1,4 +1,4 @@
-package rbf
+package ml.rbf
 
 import org.scalatest._
 import flatspec._

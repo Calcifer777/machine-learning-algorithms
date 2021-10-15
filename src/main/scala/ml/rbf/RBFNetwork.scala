@@ -1,11 +1,11 @@
-package rbf
+package ml.rbf
 
 import breeze.linalg.{DenseMatrix => BDM, DenseVector => BDV, sum}
 import breeze.linalg._
 import breeze.numerics._
 import scala.util.Random
 import scala.math
-import networks.{Perceptron, Network}
+import ml.networks.{Perceptron, Network}
 import Perceptron._
 
 trait RBFNetwork {
@@ -27,7 +27,7 @@ trait RBFNetwork {
 
   def predict(inputs: BDM[Double]): BDM[Double] = {
     val rbfOutputs = rbfLayer.predict(inputs)
-    outputLayer.activate(rbfOutputs)
+    outputLayer.predict(rbfOutputs)
   }
 
 }

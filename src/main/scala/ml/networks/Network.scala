@@ -1,16 +1,18 @@
-package networks
+package ml.networks
 
 import com.typesafe.scalalogging.LazyLogging
 import breeze.linalg.{DenseMatrix => BDM, DenseVector => BDV, sum}
 
-trait Network extends LazyLogging {
+import ml.Model
+
+trait Network extends Model with LazyLogging {
 
   def eta: Double
   def weights: Seq[BDM[Double]]
 
   def activationFunction(x: Double): Double
 
-  def activate(input: BDM[Double]): BDM[Double]
+  def predict(input: BDM[Double]): BDM[Double]
 
   def trainIteration(
       input: BDM[Double],
@@ -28,8 +30,8 @@ object Network extends LazyLogging {
       epochs: Int
   ): Network = {
 
-    logger.debug("Starting training")
-    logger.debug("Initial weights:\n" + net.weights(0).toString(10, 10))
+    logger.debug("\nStarting training")
+    // logger.debug("\nInitial weights:\n" + net.weights(0).toString(10, 10))
 
     @annotation.tailrec
     def loop(
@@ -38,7 +40,10 @@ object Network extends LazyLogging {
         targets: BDM[Double],
         loops: Int
     ): Network = {
-      if ((epochs - loops) % 10000 == 0) logger.debug(s"Training epoch $loops")
+      if (loops % (epochs / 10).toInt == 0)
+        val outputs = net.predict(inputs)
+        val precision = net.precision(outputs, targets)
+        logger.debug(s"\nTraining epoch $loops; Precision $precision\n")
       if (loops <= epochs)
         loop(net.trainIteration(inputs, targets), inputs, targets, loops + 1)
       else net

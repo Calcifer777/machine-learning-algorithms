@@ -1,4 +1,4 @@
-package networks
+package ml.networks
 
 import breeze.linalg._
 import breeze.linalg.{DenseMatrix => BDM, DenseVector => BDV, sum}
@@ -38,12 +38,12 @@ case class MultiLayerPerceptron(
   }
 
   // assume sigmoid activation for outputs
-  def activate(input: BDM[Double]): BDM[Double] = {
+  def predict(input: BDM[Double]): BDM[Double] = {
     val h = (addBias(input) * weights(0)).map(activationFunction)
     (addBias(h) * weights(1)).map(activationFunction)
   }
 
-  def activateWithTrace(input: BDM[Double]): Seq[BDM[Double]] = {
+  def predictWithTrace(input: BDM[Double]): Seq[BDM[Double]] = {
     val h = addBias((addBias(input) * weights(0)).map(activationFunction))
     val o = (h * weights(1)).map(activationFunction)
     Seq(h, o)
@@ -54,7 +54,7 @@ case class MultiLayerPerceptron(
       targets: BDM[Double]
   ): MultiLayerPerceptron = {
 
-    val activations = activateWithTrace(inputs)
+    val activations = predictWithTrace(inputs)
     val h = activations(0)
     val o = activations(1)
 

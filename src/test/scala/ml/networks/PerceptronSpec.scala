@@ -1,4 +1,4 @@
-package networks
+package ml.networks
 
 import org.scalatest._
 import flatspec._
@@ -14,7 +14,7 @@ class PerceptronSpec extends AnyFlatSpec with should.Matchers {
     val outputs = 2
     val sampleSize = 10
     val p = perceptron(inputs, outputs, 0.4)
-    val result = p.activate(DenseMatrix.fill(sampleSize, inputs)(1.0))
+    val result = p.predict(DenseMatrix.fill(sampleSize, inputs)(1.0))
     assert(result.rows == sampleSize)
     assert(result.cols == outputs)
   }
@@ -47,7 +47,7 @@ class PerceptronSpec extends AnyFlatSpec with should.Matchers {
       Array(0.0)
     )
     val result = train(p, inputs, outputs, 20)
-    assert(result.activate(inputs) == outputs)
+    assert(result.predict(inputs) == outputs)
   }
 
   "it" should "converge to the logic OR function" in {
@@ -65,7 +65,7 @@ class PerceptronSpec extends AnyFlatSpec with should.Matchers {
       Array(0.0)
     )
     val result = train(p, inputs, outputs, 20)
-    assert(result.activate(inputs) == outputs)
+    assert(result.predict(inputs) == outputs)
   }
 
   "it" should "not converge to the XOR logic function" in {
@@ -83,7 +83,7 @@ class PerceptronSpec extends AnyFlatSpec with should.Matchers {
       Array(0.0)
     )
     val result = train(p, inputs, outputs, 20)
-    assert(result.activate(inputs) != outputs)
+    assert(result.predict(inputs) != outputs)
   }
 
   "A 3-input Perceptron" should "converge to the XOR logic function" in {
@@ -101,7 +101,7 @@ class PerceptronSpec extends AnyFlatSpec with should.Matchers {
       Array(0.0)
     )
     val result = train(p, inputs, outputs, 20)
-    assert(result.activate(inputs) == outputs)
+    assert(result.predict(inputs) == outputs)
   }
 
 }
