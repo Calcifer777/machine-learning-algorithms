@@ -6,7 +6,10 @@ import breeze.linalg._
 
 import ml.Model
 
+// Type signature: https://www.youtube.com/watch?v=Wki2B6iW1oA
 trait Network[T <: Network[T]] extends Model with LazyLogging {
+
+  self: T =>
 
   def eta: Double
   def weights: Seq[BDM[Double]]
