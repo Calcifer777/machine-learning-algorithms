@@ -16,7 +16,7 @@ case class MultiLayerPerceptron(
     weights: Seq[BDM[Double]],
     eta: Double,
     beta: Double
-) extends Network {
+) extends Network[MultiLayerPerceptron] {
 
   require(weights.size == 2)
 

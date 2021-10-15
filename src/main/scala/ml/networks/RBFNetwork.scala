@@ -20,7 +20,7 @@ trait RBFNetwork {
   val nIn: Int
   val nOut: Int
   val rbfLayer: RBFLayer
-  val perceptron: Network
+  val perceptron: Perceptron
 
   // RBF layer (with bias) must be compatible with outputLayer
 

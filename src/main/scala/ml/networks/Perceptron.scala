@@ -11,7 +11,7 @@ case class Perceptron(
     outputSize: Int,
     eta: Double,
     weights: Seq[BDM[Double]]
-) extends Network {
+) extends Network[Perceptron] {
 
   def bias(size: Int): BDM[Double] = DenseMatrix.fill(size, 1)(-1)
 
@@ -32,7 +32,7 @@ case class Perceptron(
   def trainIteration(
       inputs: BDM[Double],
       targets: BDM[Double]
-  ): Network = {
+  ): Perceptron = {
     val inputsWithBias = DenseMatrix.horzcat(inputs, bias(inputs.rows))
     val errors = predict(inputs) - targets
     val newWeights = Seq(this.weights(0) - eta * (inputsWithBias.t * errors))
