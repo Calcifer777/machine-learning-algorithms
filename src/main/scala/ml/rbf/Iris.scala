@@ -8,7 +8,7 @@ import scala.io.Source
 import com.github.tototoshi.csv._
 import scala.util.Random
 
-import ml.networks.Perceptron.{ perceptron, train }
+import ml.networks.Perceptron.{perceptron, train}
 
 object Iris extends App {
 

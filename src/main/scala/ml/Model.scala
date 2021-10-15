@@ -1,7 +1,7 @@
 package ml
 
 import com.typesafe.scalalogging.LazyLogging
-import breeze.linalg.{DenseMatrix => BDM, DenseVector => BDV }
+import breeze.linalg.{DenseMatrix => BDM, DenseVector => BDV}
 import breeze.linalg._
 import scala.math.abs
 
@@ -12,8 +12,16 @@ trait Model {
     require(outputs.rows == targets.rows)
     require(outputs.cols == targets.cols)
     // Ensure outputs and targets encode categories
-    require((sum(outputs(*, ::)) :!= 1.0).toScalaVector.filter((b: Boolean) => b).size == 0)
-    require((sum(targets(*, ::)) :!= 1.0).toScalaVector.filter((b: Boolean) => b).size == 0)
+    require(
+      (sum(outputs(*, ::)) :!= 1.0).toScalaVector
+        .filter((b: Boolean) => b)
+        .size == 0
+    )
+    require(
+      (sum(targets(*, ::)) :!= 1.0).toScalaVector
+        .filter((b: Boolean) => b)
+        .size == 0
+    )
     val outputIdx = argmax(outputs(*, ::))
     val targetIdx = argmax(targets(*, ::))
     val numClasses = outputs.cols
@@ -35,12 +43,11 @@ trait Model {
     require(outputs.cols == targets.cols)
     val diffs = (outputs - targets)
     val correct = diffs(*, ::)
-      .map((row: Vector[Double]) => math.abs(sum(row)) < 1.0E-2)
+      .map((row: Vector[Double]) => math.abs(sum(row)) < 1.0e-2)
       .map(b => if (b == true) 1 else 0)
     (sum(correct).toDouble / outputs.rows) * 100
   }
 
 }
 
-object Model extends Model {
-}
+object Model extends Model {}
