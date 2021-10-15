@@ -2,6 +2,7 @@ package ml.networks
 
 import com.typesafe.scalalogging.LazyLogging
 import breeze.linalg.{DenseMatrix => BDM, DenseVector => BDV, sum}
+import breeze.linalg._
 
 import ml.Model
 
@@ -23,8 +24,8 @@ trait Network extends Model with LazyLogging {
 
 object Network extends LazyLogging {
 
-  def train[T <: Network](
-      net: T,
+  def train(
+      net: Network,
       inputs: BDM[Double],
       targets: BDM[Double],
       epochs: Int
@@ -36,8 +37,8 @@ object Network extends LazyLogging {
     @annotation.tailrec
     def loop(
         net: Network,
-        inputs: BDM[Double],
-        targets: BDM[Double],
+        inputs: DenseMatrix[Double],
+        targets: DenseMatrix[Double],
         loops: Int
     ): Network = {
       if (loops % (epochs / 10).toInt == 0)

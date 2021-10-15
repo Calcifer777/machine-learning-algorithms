@@ -1,11 +1,10 @@
-package ml.rbf
+package ml.networks
 
 import breeze.linalg.{DenseMatrix => BDM, DenseVector => BDV, sum}
 import breeze.linalg._
 import breeze.numerics._
 import scala.util.Random
 import scala.math
-import ml.networks.{Perceptron, Network}
 import Perceptron._
 
 trait RBFNetwork {
@@ -21,13 +20,13 @@ trait RBFNetwork {
   val nIn: Int
   val nOut: Int
   val rbfLayer: RBFLayer
-  val outputLayer: Network
+  val perceptron: Network
 
   // RBF layer (with bias) must be compatible with outputLayer
 
   def predict(inputs: BDM[Double]): BDM[Double] = {
     val rbfOutputs = rbfLayer.predict(inputs)
-    outputLayer.predict(rbfOutputs)
+    perceptron.predict(rbfOutputs)
   }
 
 }
@@ -42,7 +41,7 @@ object RBFNetwork {
   ): RBFNetwork = {
     val hiddenLayerData = rbfNet.rbfLayer.predict(inputs)
     val trainedOutput = Network.train(
-      rbfNet.outputLayer,
+      rbfNet.perceptron,
       hiddenLayerData,
       targets,
       epochs
@@ -51,7 +50,7 @@ object RBFNetwork {
       val nIn = 10
       val nOut = 10
       val rbfLayer = rbfNet.rbfLayer
-      val outputLayer = trainedOutput
+      val perceptron = trainedOutput
     }
   }
 

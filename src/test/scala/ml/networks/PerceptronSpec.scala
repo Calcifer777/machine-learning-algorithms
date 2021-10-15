@@ -4,6 +4,7 @@ import org.scalatest._
 import flatspec._
 import matchers._
 import Perceptron._
+import Network.train
 
 import breeze.linalg._
 

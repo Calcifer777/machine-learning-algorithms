@@ -1,4 +1,4 @@
-package ml.rbf
+package ml.networks
 
 import org.scalatest._
 import flatspec._

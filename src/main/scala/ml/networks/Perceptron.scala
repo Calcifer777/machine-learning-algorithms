@@ -32,7 +32,7 @@ case class Perceptron(
   def trainIteration(
       inputs: BDM[Double],
       targets: BDM[Double]
-  ): Perceptron = {
+  ): Network = {
     val inputsWithBias = DenseMatrix.horzcat(inputs, bias(inputs.rows))
     val errors = predict(inputs) - targets
     val newWeights = Seq(this.weights(0) - eta * (inputsWithBias.t * errors))
@@ -53,35 +53,6 @@ object Perceptron extends LazyLogging {
       eta,
       Seq(DenseMatrix.rand(inputSize + 1, outputSize, uniform01))
     )
-  }
-
-  def train(
-      p: Perceptron,
-      inputs: BDM[Double],
-      targets: BDM[Double],
-      epochs: Int
-  ): Perceptron = {
-
-    logger.debug("Starting training")
-    // logger.debug("Initial weights:\n" + p.weights(0).toString(10, 10))
-
-    @annotation.tailrec
-    def loop(
-        p: Perceptron,
-        inputs: BDM[Double],
-        targets: BDM[Double],
-        loops: Int
-    ): Perceptron = {
-      if (loops % (epochs / 10).toInt == 0)
-        val outputs = p.predict(inputs)
-        val precision = p.precision(outputs, targets)
-        logger.debug(s"Training epoch $loops; Precision $precision\n")
-      if (loops <= epochs)
-        loop(p.trainIteration(inputs, targets), inputs, targets, loops + 1)
-      else p
-    }
-    loop(p, inputs, targets, 1)
-
   }
 
 }
