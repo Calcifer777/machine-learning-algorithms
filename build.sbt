@@ -1,5 +1,7 @@
 ThisBuild / scalaVersion := "3.0.0"
 
+scalafmtOnCompile := true
+
 val breezeVersion = "2.0"
 val scalaTestVersion = "3.2.10"
 

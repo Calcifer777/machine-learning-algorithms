@@ -2,10 +2,10 @@ package ml.networks
 
 import breeze.linalg.{DenseMatrix => BDM, DenseVector => BDV, sum}
 import breeze.linalg._
+import com.github.tototoshi.csv._
 import breeze.numerics._
 import java.io.File
 import scala.io.Source
-import com.github.tototoshi.csv._
 import scala.util.Random
 
 import MultiLayerPerceptron.mlp
