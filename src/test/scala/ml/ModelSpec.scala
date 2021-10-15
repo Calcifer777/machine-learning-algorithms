@@ -33,20 +33,20 @@ class ModelSpec extends AnyFlatSpec with should.Matchers {
       Array(0.0, 1.0, 0.0),
       Array(0.0, 1.0, 0.0),
       Array(0.0, 0.0, 1.0),
-      Array(0.0, 0.0, 1.0),
+      Array(0.0, 0.0, 1.0)
     )
     val targets = DenseMatrix(
-      Array(1.0, 0.0, 0.0),  // ok
-      Array(1.0, 0.0, 0.0),  // ok
-      Array(1.0, 0.0, 0.0),  // ko: +1 in 2 x 0
-      Array(0.0, 1.0, 0.0),  // ok
-      Array(0.0, 0.0, 1.0),  // ok
-      Array(0.0, 1.0, 0.0),  // ko: +1 in 3 x 2
+      Array(1.0, 0.0, 0.0), // ok
+      Array(1.0, 0.0, 0.0), // ok
+      Array(1.0, 0.0, 0.0), // ko: +1 in 2 x 0
+      Array(0.0, 1.0, 0.0), // ok
+      Array(0.0, 0.0, 1.0), // ok
+      Array(0.0, 1.0, 0.0) // ko: +1 in 3 x 2
     )
     val expected = DenseMatrix(
       Array(2, 0, 0),
       Array(1, 1, 0),
-      Array(0, 1, 1),
+      Array(0, 1, 1)
     )
     assert(confMatrix(outputs, targets) == expected)
   }
