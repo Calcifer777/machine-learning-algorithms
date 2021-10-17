@@ -47,7 +47,9 @@ object Network extends LazyLogging {
       if (loops % (epochs / 10).toInt == 0)
         val outputs = net.predict(inputs)
         val precision = net.precision(outputs, targets)
-        logger.debug(s"\nTraining epoch $loops; Precision $precision\n")
+        logger.debug(
+          "\n" + f"Training epoch $loops; Precision ${precision}%.0f%%"
+        )
       if (loops <= epochs)
         loop(net.trainIteration(inputs, targets), inputs, targets, loops + 1)
       else net

@@ -1,11 +1,12 @@
-package ml.networks
+package samples
 
 import breeze.linalg.{DenseMatrix => BDM, DenseVector => BDV, sum}
 import breeze.linalg._
 import breeze.numerics._
 
 import data.IrisDataSource
-import ml.networks.Network.train
+import ml.networks._
+import RBFNetwork.train
 
 object IrisRBF extends App {
 
@@ -19,7 +20,7 @@ object IrisRBF extends App {
     val perceptron = Perceptron.perceptron(5, 3, 0.3)
   }
 
-  val trainedRBF = RBFNetwork.train(rbfNet, trainDS.xs, trainDS.ys, 120)
+  val trainedRBF = train(rbfNet, trainDS.xs, trainDS.ys, 120)
 
   val predictions = trainedRBF.predict(testDS.xs)
 
