@@ -16,7 +16,6 @@ class ModelSpec extends AnyFlatSpec with should.Matchers {
       Array(0.0, 1.0),
       Array(0.0, 0.0)
     )
-
     val targets = DenseMatrix(
       Array(1.0, 1.0),
       Array(0.0, 0.0),
@@ -24,6 +23,35 @@ class ModelSpec extends AnyFlatSpec with should.Matchers {
       Array(0.0, 0.0)
     )
     assert(precision(outputs, targets) == 75.0)
+  }
+
+  it should "calculate the precision index of a 3D prediction" in {
+    val outputs = DenseMatrix(
+      Array(1.0, 0.0, 0.0),
+      Array(0.0, 0.0, 1.0),
+      Array(0.0, 0.0, 1.0),
+      Array(0.0, 0.0, 1.0),
+      Array(0.0, 0.0, 0.0),
+      Array(1.0, 0.0, 0.0),
+      Array(0.0, 0.0, 1.0),
+      Array(1.0, 0.0, 0.0),
+      Array(1.0, 0.0, 0.0),
+      Array(1.0, 0.0, 0.0)
+    )
+
+    val targets = DenseMatrix(
+      Array(1.0, 0.0, 0.0),
+      Array(1.0, 0.0, 0.0), // KO 1
+      Array(0.0, 1.0, 0.0), // KO 2
+      Array(0.0, 1.0, 0.0), // KO 3
+      Array(0.0, 0.0, 1.0), // KO 4
+      Array(1.0, 0.0, 0.0),
+      Array(1.0, 0.0, 0.0), // KO 5
+      Array(1.0, 0.0, 0.0),
+      Array(0.0, 1.0, 0.0), // KO 6
+      Array(1.0, 0.0, 0.0)
+    )
+    assert(precision(outputs, targets) == 40.0)
   }
 
   it should "compute the confusion matrix" in {

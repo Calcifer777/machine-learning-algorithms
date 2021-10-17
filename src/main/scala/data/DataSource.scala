@@ -20,17 +20,17 @@ trait DataSource {
     require(data.xs.rows == data.ys.rows)
     val xs = data.xs
     val ys = data.ys
-    val idx = Random.shuffle(1 to xs.rows - 1)
+    val idx = Random.shuffle(0 to xs.rows - 1)
     val (testIdx, trainIdx) = idx.splitAt((xs.rows * testRatio).toInt)
     (
       Dataset(
         xs(trainIdx, ::).toDenseMatrix,
-        xs(testIdx, ::).toDenseMatrix,
+        ys(trainIdx, ::).toDenseMatrix,
         data.xLabels,
         data.yLabels
       ),
       Dataset(
-        ys(trainIdx, ::).toDenseMatrix,
+        xs(testIdx, ::).toDenseMatrix,
         ys(testIdx, ::).toDenseMatrix,
         data.xLabels,
         data.yLabels

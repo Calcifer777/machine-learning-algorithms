@@ -5,26 +5,33 @@ import breeze.linalg.{DenseMatrix => BDM, DenseVector => BDV}
 import breeze.linalg._
 import scala.math.abs
 
-trait Model {
+trait Model extends LazyLogging {
 
-  def confMatrix(outputs: BDM[Double], targets: BDM[Double]): BDM[Int] = {
+  def confMatrix(predictions: BDM[Double], targets: BDM[Double]): BDM[Int] = {
     // Ensure outputs and targets have the same dimensions
-    require(outputs.rows == targets.rows)
-    require(outputs.cols == targets.cols)
-    // Ensure outputs and targets encode categories
-    require(
-      (sum(outputs(*, ::)) :!= 1.0).toScalaVector
-        .filter((b: Boolean) => b)
-        .size == 0
+    assert(
+      predictions.rows == targets.rows,
+      s"Outputs rows (${predictions.rows}) differ from targets rows (${targets.rows})"
     )
-    require(
+    assert(
+      predictions.cols == targets.cols,
+      s"Outputs cols (${predictions.cols}) differ from targets cols (${targets.cols})"
+    )
+    // Ensure outputs and targets encode categories
+    val outputsNotOHE = (sum(predictions(*, ::)) :!= 1.0).toScalaVector
+      .filter((b: Boolean) => b)
+      .size != 0
+    if (outputsNotOHE)
+      logger.warn("Outputs are not OHE of a categorical variable")
+    assert(
       (sum(targets(*, ::)) :!= 1.0).toScalaVector
         .filter((b: Boolean) => b)
-        .size == 0
+        .size == 0,
+      "Targets are not OHE of a categorical variable"
     )
-    val outputIdx = argmax(outputs(*, ::))
+    val outputIdx = argmax(predictions(*, ::))
     val targetIdx = argmax(targets(*, ::))
-    val numClasses = outputs.cols
+    val numClasses = predictions.cols
     val results: Seq[Array[Int]] = (0 to numClasses - 1)
       .map { (x: Int) =>
         val l = (0 to numClasses - 1)
@@ -41,11 +48,13 @@ trait Model {
   def precision(outputs: BDM[Double], targets: BDM[Double]): Double = {
     require(outputs.rows == targets.rows)
     require(outputs.cols == targets.cols)
-    val diffs = (outputs - targets)
-    val correct = diffs(*, ::)
-      .map((row: Vector[Double]) => math.abs(sum(row)) < 1.0e-2)
-      .map(b => if (b == true) 1 else 0)
-    (sum(correct).toDouble / outputs.rows) * 100
+    val correct = (0 to outputs.rows - 1)
+      .map { (idx: Int) =>
+        outputs(idx, ::) == targets(idx, ::)
+      }
+      .filter(_ == true)
+      .size
+    (correct.toDouble / outputs.rows) * 100
   }
 
 }

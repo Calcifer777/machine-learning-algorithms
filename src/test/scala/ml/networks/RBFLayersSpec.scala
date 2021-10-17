@@ -30,7 +30,7 @@ class LayersSpec extends AnyFlatSpec with should.Matchers {
   )
 
   "An RBF sampling hidden layer" should "generate weights based on inputs" in {
-    val layer = Sample(4.0, 3, 42)
+    val layer = SamplingLayer(4.0, 3, 42)
     val expected = DenseMatrix(
       Array(0.0, 6.0, 0.0),
       Array(3.0, 0.0, 5.0),
@@ -38,12 +38,12 @@ class LayersSpec extends AnyFlatSpec with should.Matchers {
       Array(6.0, 7.0, 8.0),
       Array(1.0, 7.0, 6.0)
     )
-    assert(layer.weights(inputs) == expected)
+    assert(layer.getWeights(inputs) == expected)
   }
 
   it should "generate weights and nodes data when trained" in {
-    val layer = Sample(4.0, 3, 42)
-    val trained = layer.predict(inputs)
+    val layer = SamplingLayer(4.0, 3, 42)
+    val trained = layer.predict(inputs, true)
     val expected = DenseMatrix(
       Array(0.58561397, 0.03628523, 0.3781008),
       Array(0.49944823, 0.17808375, 0.32246802),

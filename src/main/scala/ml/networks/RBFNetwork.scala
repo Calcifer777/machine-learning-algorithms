@@ -5,9 +5,11 @@ import breeze.linalg._
 import breeze.numerics._
 import scala.util.Random
 import scala.math
+
+import ml.Model
 import Perceptron._
 
-trait RBFNetwork {
+trait RBFNetwork extends Model {
 
   /** 
    *  Inputs:                 SampleSize x nInputs
@@ -39,7 +41,7 @@ object RBFNetwork {
       targets: BDM[Double],
       epochs: Int
   ): RBFNetwork = {
-    val hiddenLayerData = rbfNet.rbfLayer.predict(inputs)
+    val hiddenLayerData = rbfNet.rbfLayer.predict(inputs, true)
     val trainedOutput = Network.train(
       rbfNet.perceptron,
       hiddenLayerData,
@@ -47,8 +49,8 @@ object RBFNetwork {
       epochs
     )
     new RBFNetwork {
-      val nIn = 10
-      val nOut = 10
+      val nIn = rbfNet.nIn
+      val nOut = rbfNet.nOut
       val rbfLayer = rbfNet.rbfLayer
       val perceptron = trainedOutput
     }
