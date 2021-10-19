@@ -9,6 +9,10 @@
 - [x] Create data package
 - [x] Fix Network typing system
 
-# References
+# ML References
+
+- LDA, QDA: https://www.youtube.com/watch?v=C0u_v7vEDBY
+
+# Scala References
 
 - [Breeze docs](https://github.com/scalanlp/breeze/wiki)
