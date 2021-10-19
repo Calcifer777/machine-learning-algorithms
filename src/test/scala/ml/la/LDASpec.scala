@@ -32,13 +32,4 @@ class LDASpec extends AnyFlatSpec with should.Matchers {
     assert(diffs.size == 0)
   }
 
-  it should "estimate a LDA" in {
-    val classes = DenseMatrix(
-      Array(0.0, 1.0),
-      Array(0.0, 1.0),
-      Array(1.0, 0.0)
-    )
-    val result = LA.lda(m, classes)
-  }
-
 }
