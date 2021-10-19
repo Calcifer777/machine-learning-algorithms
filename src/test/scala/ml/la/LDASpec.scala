@@ -9,7 +9,7 @@ import breeze.linalg._
 import breeze.linalg.{DenseMatrix => BDM, DenseVector => BDV, sum}
 import breeze.numerics._
 
-class LDASpec extends AnyFlatSpec with should.Matchers {
+class LASpec extends AnyFlatSpec with should.Matchers {
 
   val epsilon = 1e-4f
 

@@ -61,4 +61,30 @@ object LA {
     components
   }
 
+  def pca(
+      data: BDM[Double],
+      numCmp: Int = 2,
+      normalize: Boolean = true
+  ): (BDM[Double], BDM[Double]) = {
+    val colMeans = (sum(data(::, *)) / data.rows.toDouble).t
+    val centered = data(*, ::) - colMeans
+    val covMat = (centered.t * centered) / data.rows.toDouble
+    val eigs = eig(covMat)
+    val (eVals, eVecs) = (eigs.eigenvalues, eigs.eigenvectors)
+    val cmpIdx = argsort(eVals).reverse.slice(0, numCmp)
+    val norms = norm(eVecs(::, *))
+    val eVecsNorm1: BDM[Double] = eVecs(*, ::) / norms.t
+    val eVecsNorm2 = eVecsNorm1(*, ::) * sqrt(eVals)
+    val eVecsNorm3 = DenseMatrix(eVecsNorm2.toArray.map(_.toArray): _*)
+    val eVecsNorm4 = eVecsNorm3(::, cmpIdx).toDenseMatrix
+
+    val newX = data * eVecsNorm4
+    println(newX.rows)
+    println(newX.cols)
+    println(eVecsNorm4.rows)
+    println(eVecsNorm4.cols)
+    val newY = (newX * eVecsNorm4.t)
+    val newY2 = newY(*, ::) + colMeans
+    (newX, newY2)
+  }
 }
