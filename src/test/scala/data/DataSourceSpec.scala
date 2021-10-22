@@ -20,7 +20,7 @@ class DataSourceSpec extends AnyFlatSpec with should.Matchers {
   "A DataSource" should "split a dataset in train and test" in {
 
     val ds = new DataSource {
-      val data = dataset
+      val data                                = dataset
       def loadData(fileName: String): Dataset = dataset
     }
 

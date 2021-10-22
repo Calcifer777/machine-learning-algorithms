@@ -19,15 +19,10 @@ trait DataSource {
 
   def trainTestSplit(testRatio: Double): (Dataset, Dataset) = {
     require(data.xs.rows == data.ys.rows)
-    val xs = data.xs
-    val ys = data.ys
-    val idx = Random.shuffle(0 to xs.rows - 1)
+    val xs                  = data.xs
+    val ys                  = data.ys
+    val idx                 = Random.shuffle(0 to xs.rows - 1)
     val (testIdx, trainIdx) = idx.splitAt((xs.rows * testRatio).toInt)
-    // val idx = 0 to xs.rows - 1
-    // val trainIdx = idx.sliding(1, 2).flatten.toSeq
-    // print(trainIdx)
-    // val testIdx = trainIdx.map(_ + 1).reverse.tail.reverse
-    // val (testIdx, trainIdx) = (, idx(1::2))
     (
       Dataset(
         xs(trainIdx, ::).toDenseMatrix,

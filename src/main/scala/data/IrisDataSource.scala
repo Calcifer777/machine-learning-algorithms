@@ -25,11 +25,11 @@ final case class IrisDataSource(path: String) extends DataSource {
     }
     val xs = DenseMatrix(xsData: _*).mapValues(_.toDouble)
     // Normalize xs
-    val means = mean(xs(::, *))
+    val means      = mean(xs(::, *))
     val xsCentered = xs(*, ::) - mean(xs(::, *)).t
     // println(xsCentered(0 to 2, ::))
-    val maxByCol = max(xsCentered(::, *)).t
-    val minByCol = abs(min(xsCentered(::, *))).t
+    val maxByCol       = max(xsCentered(::, *)).t
+    val minByCol       = abs(min(xsCentered(::, *))).t
     val maxAndMinByCol = DenseVector.horzcat(maxByCol, minByCol).toDenseMatrix.t
     // println(maxAndMinByCol)
     val largestAbsByCol = max(maxAndMinByCol(::, *)).t.toDenseVector

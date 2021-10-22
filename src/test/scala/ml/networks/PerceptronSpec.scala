@@ -11,23 +11,23 @@ import breeze.linalg._
 class PerceptronSpec extends AnyFlatSpec with should.Matchers {
 
   "A Perceptron" should "return a result of the correct size when fed an input vector" in {
-    val inputs = 3
-    val outputs = 2
+    val inputs     = 3
+    val outputs    = 2
     val sampleSize = 10
-    val p = perceptron(inputs, outputs, 0.4)
-    val result = p.predict(DenseMatrix.fill(sampleSize, inputs)(1.0))
+    val p          = perceptron(inputs, outputs, 0.4)
+    val result     = p.predict(DenseMatrix.fill(sampleSize, inputs)(1.0))
     assert(result.rows == sampleSize)
     assert(result.cols == outputs)
   }
 
   it should "update its weights after each training iteration" in {
     val sampleSize = 10
-    val inputSize = 3
+    val inputSize  = 3
     val outputSize = 2
-    val inputs = DenseMatrix.fill[Double](sampleSize, inputSize)(42)
-    val outputs = DenseMatrix.fill[Double](sampleSize, outputSize)(42)
-    val p = perceptron(inputSize, outputSize, 0.4)
-    val result = p.trainIteration(inputs, outputs)
+    val inputs     = DenseMatrix.fill[Double](sampleSize, inputSize)(42)
+    val outputs    = DenseMatrix.fill[Double](sampleSize, outputSize)(42)
+    val p          = perceptron(inputSize, outputSize, 0.4)
+    val result     = p.trainIteration(inputs, outputs)
     assert(result.weights != p.weights)
     assert(result.weights(0).cols == p.weights(0).cols)
     assert(result.weights(0).rows == p.weights(0).rows)

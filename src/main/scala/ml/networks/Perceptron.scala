@@ -36,8 +36,8 @@ case class Perceptron(
     assert(inputs.rows == targets.rows)
     assert(inputs.cols + 1 == weights(0).rows)
     val inputsWithBias = DenseMatrix.horzcat(inputs, bias(inputs.rows))
-    val errors = predict(inputs) - targets
-    val newWeights = Seq(this.weights(0) - eta * (inputsWithBias.t * errors))
+    val errors         = predict(inputs) - targets
+    val newWeights     = Seq(this.weights(0) - eta * (inputsWithBias.t * errors))
     Perceptron(this.inputSize, this.outputSize, eta, newWeights)
   }
 

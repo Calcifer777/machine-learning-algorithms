@@ -43,13 +43,10 @@ object Network extends LazyLogging {
         targets: DenseMatrix[Double],
         loops: Int
     ): T = {
-      if (loops % (epochs / 10).toInt == 0)
-        val outputs = net.predict(inputs)
+      if (loops.toDouble % (epochs.toDouble / 10).toInt == 0)
+        val outputs   = net.predict(inputs)
         val precision = net.precision(outputs, targets)
-        logger.debug(
-          "\n" + f"Training epoch $loops; Precision ${precision}%.0f%%"
-        )
-      // println(s"ITERATION: $loops")
+        logger.debug("\n" + f"Training epoch $loops; Precision ${precision}%.0f%%")
       if (loops <= epochs)
         loop(net.trainIteration(inputs, targets), inputs, targets, loops + 1)
       else net

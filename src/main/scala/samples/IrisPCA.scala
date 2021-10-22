@@ -12,8 +12,8 @@ object IrisPCA extends App {
   val irisData = IrisDataSource("iris.csv")
 
   val (components, y) = pca(irisData.data.xs)
-  val f = Figure()
-  val p = f.subplot(0)
+  val f               = Figure()
+  val p               = f.subplot(0)
   p += scatter(
     components(::, 0),
     components(::, 1),

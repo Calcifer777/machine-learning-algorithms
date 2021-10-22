@@ -18,13 +18,13 @@ object SplineInterpolator extends App {
   // Gaussian process
   val v1 = exp(-pow(x, 2) /:/ 9.0)
   val v2 = exp(-pow((x - 0.5), 2) /:/ 4.0)
-  val y = 2.5 * v1 + 3.2 * v2 + DenseVector.rand(x.length, normal)
+  val y  = 2.5 * v1 + 3.2 * v2 + DenseVector.rand(x.length, normal)
 
   // Input matrix
   val data = DenseVector.horzcat(v1, v2)
 
   // OLS
-  val lsResults = leastSquares(data, y)
+  val lsResults   = leastSquares(data, y)
   val predictions = data * lsResults.coefficients
 
   val p1 = f.subplot(0)
@@ -34,8 +34,8 @@ object SplineInterpolator extends App {
 
   // Plot cubic spline
   val knotsNum = 10
-  val knots = (0 to x.length - 1 by x.length / knotsNum) appended (x.length - 1)
-  val ciInter = CubicInterpolator(x(knots), y(knots))
+  val knots    = (0 to x.length - 1 by x.length / knotsNum) appended (x.length - 1)
+  val ciInter  = CubicInterpolator(x(knots), y(knots))
 
   val p2 = f.subplot(2, 1, 1)
   p2.title = "Cubic Spline"

@@ -49,9 +49,9 @@ object RBFNetwork {
       epochs
     )
     new RBFNetwork {
-      val nIn = rbfNet.nIn
-      val nOut = rbfNet.nOut
-      val rbfLayer = rbfNet.rbfLayer
+      val nIn        = rbfNet.nIn
+      val nOut       = rbfNet.nOut
+      val rbfLayer   = rbfNet.rbfLayer
       val perceptron = trainedOutput
     }
   }

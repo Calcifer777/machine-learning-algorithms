@@ -13,7 +13,7 @@ final case class PimaDataSource(path: String) extends DataSource {
     val raw: List[List[String]] =
       CSVReader.open(Source.fromResource(fileName)).all()
     // Get labels
-    val labels = raw.head
+    val labels  = raw.head
     val xLabels = labels.reverse.tail.reverse.toSeq
     val yLabels = Seq(labels.last)
     // Format data
@@ -23,8 +23,8 @@ final case class PimaDataSource(path: String) extends DataSource {
         DenseVector(r.toArray: _*)
       }
     val data = DenseMatrix(vectors: _*)
-    val xs = data(::, 0 to -1).toDenseMatrix
-    val ys = data(::, -1).toDenseMatrix.t
+    val xs   = data(::, 0 to -1).toDenseMatrix
+    val ys   = data(::, -1).toDenseMatrix.t
     // Check data size
     assert(xs.rows == 768 && xs.cols == 9)
     assert(ys.rows == 768 && ys.cols == 1)

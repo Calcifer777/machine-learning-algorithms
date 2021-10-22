@@ -22,35 +22,35 @@ class MultiLayerPerceptronSpec extends AnyFlatSpec with should.Matchers {
   }
 
   it should "predict via sigmoid function" in {
-    val nn = mlp(Seq(5, 4, 3), 0.4, 0.3)
+    val nn     = mlp(Seq(5, 4, 3), 0.4, 0.3)
     val result = nn.activationFunction(3.0)
     assert(abs(result - 0.7109) < 0.001)
   }
 
   it should "yield the a correctly sized Matrix when predictd" in {
-    val nn = mlp(Seq(5, 4, 3), 0.4, 0.3)
+    val nn         = mlp(Seq(5, 4, 3), 0.4, 0.3)
     val sampleSize = 10
-    val inputs = DenseMatrix.fill[Double](sampleSize, 5)(42)
-    val result = nn.predict(inputs)
+    val inputs     = DenseMatrix.fill[Double](sampleSize, 5)(42)
+    val result     = nn.predict(inputs)
     assert(result.rows == 10)
     assert(result.cols == 3)
   }
 
   it should "yield the same output when predictd with full trace" in {
-    val net = mlp(Seq(5, 4, 3), 0.4, 0.3)
+    val net        = mlp(Seq(5, 4, 3), 0.4, 0.3)
     val sampleSize = 1
-    val inputs = DenseMatrix.fill[Double](sampleSize, 5)(42)
-    val act = net.predict(inputs)
-    val withTrace = net.predictWithTrace(inputs)
+    val inputs     = DenseMatrix.fill[Double](sampleSize, 5)(42)
+    val act        = net.predict(inputs)
+    val withTrace  = net.predictWithTrace(inputs)
     assert(act == withTrace.last)
   }
 
   it should "update its weights after each training iteration" in {
     val sampleSize = 10
-    val inputs = DenseMatrix.fill[Double](sampleSize, 5)(42)
-    val outputs = DenseMatrix.fill[Double](sampleSize, 3)(42)
-    val nn = mlp(Seq(5, 4, 3), 0.4, 0.3)
-    val result = nn.trainIteration(inputs, outputs)
+    val inputs     = DenseMatrix.fill[Double](sampleSize, 5)(42)
+    val outputs    = DenseMatrix.fill[Double](sampleSize, 3)(42)
+    val nn         = mlp(Seq(5, 4, 3), 0.4, 0.3)
+    val result     = nn.trainIteration(inputs, outputs)
     // assert(result.weights != nn.weights)
     assert(result.weights(0).cols == nn.weights(0).cols)
     assert(result.weights(1).rows == nn.weights(1).rows)
@@ -94,17 +94,23 @@ class MultiLayerPerceptronSpec extends AnyFlatSpec with should.Matchers {
   }
 
   it should "converge to the AND logic function" in {
-    val net = mlp(Seq(2, 2, 1), eta = 0.4, beta = 1)
+    val net = mlp(Seq(2, 2, 1), eta = 0.3, beta = 1)
     val inputs = DenseMatrix(
       Array(1.0, 1.0),
       Array(1.0, 0.0),
       Array(0.0, 1.0),
       Array(0.0, 0.0)
     )
-    val outputs = DenseMatrix(Array(1.0), Array(0.0), Array(0.0), Array(0.0))
-    val trained = train(net, inputs, outputs, 5000)
+    val outputs     = DenseMatrix(Array(1.0), Array(0.0), Array(0.0), Array(0.0))
+    val trained     = train(net, inputs, outputs, 100)
     val predictions = trained.predict(inputs)
-    val margin = outputs - predictions
+    val predictionsNorm = predictions(*, ::).map { v =>
+      val am = argmax(v)
+      val v2 = DenseVector.fill[Double](v.length)(0.0)
+      v2(argmax(v)) = 1.0
+      v2
+    }
+    val margin = outputs - predictionsNorm
     assert(margin(0, 0) < 0.1)
     assert(margin(1, 0) < 0.1)
     assert(margin(2, 0) < 0.1)
@@ -126,9 +132,15 @@ class MultiLayerPerceptronSpec extends AnyFlatSpec with should.Matchers {
       Array(1.0),
       Array(0.0)
     )
-    val trained = train(net, inputs, outputs, 5000)
+    val trained     = train(net, inputs, outputs, 5000)
     val predictions = trained.predict(inputs)
-    val margin = outputs - predictions
+    val predictionsNorm = predictions(*, ::).map { v =>
+      val am = argmax(v)
+      val v2 = DenseVector.fill[Double](v.length)(0.0)
+      v2(argmax(v)) = 1.0
+      v2
+    }
+    val margin = outputs - predictionsNorm
     assert(margin(0, 0) < 0.1)
     assert(margin(1, 0) < 0.1)
     assert(margin(2, 0) < 0.1)

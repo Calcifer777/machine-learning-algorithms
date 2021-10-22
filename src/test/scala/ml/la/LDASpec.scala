@@ -28,7 +28,7 @@ class LASpec extends AnyFlatSpec with should.Matchers {
       Array(-4.286, 2.144133)
     )
     val result = LA.cov(m, true)
-    val diffs = (result - expected).findAll(abs(_) > 0.1)
+    val diffs  = (result - expected).findAll(abs(_) > 0.1)
     assert(diffs.size == 0)
   }
 

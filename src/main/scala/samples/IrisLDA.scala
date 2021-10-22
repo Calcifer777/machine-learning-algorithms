@@ -13,8 +13,8 @@ object IrisLDA extends App {
   val (xs, ys) = (irisData.data.xs, irisData.data.ys)
 
   val components = lda(xs, ys)
-  val f = Figure()
-  val p = f.subplot(0)
+  val f          = Figure()
+  val p          = f.subplot(0)
   (components.zipWithIndex) foreach { case (c, idx) =>
     val color = GreenYelloOrangeRed(idx * 220)
     p += scatter(

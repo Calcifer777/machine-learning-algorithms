@@ -42,7 +42,7 @@ class LayersSpec extends AnyFlatSpec with should.Matchers {
   }
 
   it should "generate weights and nodes data when trained" in {
-    val layer = SamplingLayer(4.0, 3, 42)
+    val layer   = SamplingLayer(4.0, 3, 42)
     val trained = layer.predict(inputs, true)
     val expected = DenseMatrix(
       Array(0.58561397, 0.03628523, 0.3781008),

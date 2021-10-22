@@ -29,8 +29,8 @@ trait Model extends LazyLogging {
         .size == 0,
       "Targets are not OHE of a categorical variable"
     )
-    val outputIdx = argmax(predictions(*, ::))
-    val targetIdx = argmax(targets(*, ::))
+    val outputIdx  = argmax(predictions(*, ::))
+    val targetIdx  = argmax(targets(*, ::))
     val numClasses = predictions.cols
     val results: Seq[Array[Int]] = (0 to numClasses - 1)
       .map { (x: Int) =>
