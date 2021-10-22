@@ -1,8 +1,11 @@
 package data
 
 import scala.io.Source
-import breeze.linalg.{DenseMatrix, DenseVector}
 import com.github.tototoshi.csv._
+import breeze.linalg.{DenseMatrix, DenseVector}
+import breeze.linalg._
+import breeze.numerics._
+import breeze.stats.mean
 
 final case class IrisDataSource(path: String) extends DataSource {
 
@@ -10,12 +13,29 @@ final case class IrisDataSource(path: String) extends DataSource {
 
   def loadData(fileName: String): Dataset = {
     // Read dataset
-    val data = CSVReader.open(Source.fromResource(fileName)).all()
+    // val data = CSVReader.open(Source.fromResource(fileName)).all()
+    val data = CSVReader
+      .open(
+        "/home/calcifer/git/marco/machine-learning-algorithms/src/main/resources/iris.csv"
+      )
+      .all()
     // Format xs
     val xsData = data map { (r: List[String]) =>
       DenseVector(r: _*).slice(0, 4)
     }
     val xs = DenseMatrix(xsData: _*).mapValues(_.toDouble)
+    // Normalize xs
+    val means = mean(xs(::, *))
+    val xsCentered = xs(*, ::) - mean(xs(::, *)).t
+    // println(xsCentered(0 to 2, ::))
+    val maxByCol = max(xsCentered(::, *)).t
+    val minByCol = abs(min(xsCentered(::, *))).t
+    val maxAndMinByCol = DenseVector.horzcat(maxByCol, minByCol).toDenseMatrix.t
+    // println(maxAndMinByCol)
+    val largestAbsByCol = max(maxAndMinByCol(::, *)).t.toDenseVector
+    // println(largestAbsByCol)
+    val xsBounded = xsCentered(*, ::) / largestAbsByCol
+    // println(xsBounded(0 to 2, ::))
     // Format ys
     val ysData = data
       .map { (r: List[String]) => DenseVector(r: _*) }
@@ -40,7 +60,7 @@ final case class IrisDataSource(path: String) extends DataSource {
       "iris class"
     )
     // Return
-    Dataset(xs, ys, xLabels, yLabels)
+    Dataset(xsBounded, ys, xLabels, yLabels)
   }
 
 }

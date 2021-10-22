@@ -1,6 +1,7 @@
 package data
 
 import breeze.linalg.{DenseMatrix => BDM, DenseVector => BDV, sum}
+import breeze.linalg._
 import scala.util.Random
 
 case class Dataset(
@@ -22,6 +23,11 @@ trait DataSource {
     val ys = data.ys
     val idx = Random.shuffle(0 to xs.rows - 1)
     val (testIdx, trainIdx) = idx.splitAt((xs.rows * testRatio).toInt)
+    // val idx = 0 to xs.rows - 1
+    // val trainIdx = idx.sliding(1, 2).flatten.toSeq
+    // print(trainIdx)
+    // val testIdx = trainIdx.map(_ + 1).reverse.tail.reverse
+    // val (testIdx, trainIdx) = (, idx(1::2))
     (
       Dataset(
         xs(trainIdx, ::).toDenseMatrix,

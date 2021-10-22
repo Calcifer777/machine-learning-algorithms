@@ -35,7 +35,6 @@ object Network extends LazyLogging {
   ): T = {
 
     logger.debug("\nStarting training")
-    // logger.debug("\nInitial weights:\n" + net.weights(0).toString(10, 10))
 
     @annotation.tailrec
     def loop(
@@ -50,6 +49,7 @@ object Network extends LazyLogging {
         logger.debug(
           "\n" + f"Training epoch $loops; Precision ${precision}%.0f%%"
         )
+      // println(s"ITERATION: $loops")
       if (loops <= epochs)
         loop(net.trainIteration(inputs, targets), inputs, targets, loops + 1)
       else net
